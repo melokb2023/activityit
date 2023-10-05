@@ -4,16 +4,24 @@
  if(isset($_SESSION["username"]))  
  {  
       header("location:entry.php");  
- }  
+ }
+   
  if(isset($_POST["register"]))  
- {  
+ {
+     $username = $_POST["username"];
+     $sql_u = "SELECT * FROM users WHERE username= '$username' "; 
+     $res_u = mysqli_query($connect, $sql_u) or die(mysqli_error($connect));
+
       if(empty($_POST["firstname"]) || empty($_POST["lastname"]) || empty($_POST["username"]) || empty($_POST["password"]))  
       {  
            echo '<script>alert("All Fields are required")</script>';  
       }
       else if(strlen($_POST["password"]) < 8){
           echo '<script>alert("Please enter a password with a minimum of 8 characters")</script>';  
-      }  
+      }
+      else if(mysqli_num_rows($res_u) > 0){
+          echo '<script>alert("Username already exists")</script>';  
+      }
       else  
       {  
            $firstname = mysqli_real_escape_string($connect, $_POST["firstname"]);
