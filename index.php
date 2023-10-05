@@ -7,16 +7,22 @@
  }  
  if(isset($_POST["register"]))  
  {  
-      if(empty($_POST["username"]) || empty($_POST["password"]))  
+      if(empty($_POST["firstname"]) || empty($_POST["lastname"]) || empty($_POST["username"]) || empty($_POST["password"]))  
       {  
-           echo '<script>alert("Both Fields are required")</script>';  
+           echo '<script>alert("All Fields are required")</script>';  
+      }
+      else if(strlen($_POST["password"]) < 8){
+          echo '<script>alert("Please enter a password with a minimum of 8 characters")</script>';  
       }  
       else  
       {  
+           $firstname = mysqli_real_escape_string($connect, $_POST["firstname"]);
+           $lastname = mysqli_real_escape_string($connect, $_POST["lastname"]);   
            $username = mysqli_real_escape_string($connect, $_POST["username"]);  
            $password = mysqli_real_escape_string($connect, $_POST["password"]);  
-           $password = password_hash($password, PASSWORD_DEFAULT);  
-           $query = "INSERT INTO users(username, password) VALUES('$username', '$password')";  
+           $password = password_hash($password, PASSWORD_DEFAULT);
+           $completename = $firstname."\n".$lastname;
+           $query = "INSERT INTO users(completename,username, password) VALUES('$completename','$username', '$password')";  
            if(mysqli_query($connect, $query))  
            {  
                 echo '<script>alert("Registration Done")</script>';  
@@ -60,17 +66,19 @@
  }  
  ?>  
  <!DOCTYPE html>  
- <html>  
+ <html>    
       <head>  
            <title>Webslesson Tutorial | PHP Login Registration Script by using password_hash() method</title>  
            <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>  
            <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" />  
            <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>  
+         
       </head>  
       <body>  
+        <link rel="stylesheet" href="index.css">
            <br /><br />  
            <div class="container" style="width:500px;">  
-                <h3 align="center">PHP Login Registration Script by using password_hash() method</h3>  
+                <h3 align="center" style = "font-family:Verdana">SIMPLE FORM OF LOGIN</h3>  
                 <br />  
                 <?php  
                 if(isset($_GET["action"]) == "login")  
@@ -79,11 +87,11 @@
                 <h3 align="center">Login</h3>  
                 <br />  
                 <form method="post">  
-                     <label>Enter Username</label>  
+                     <label>Please Enter Username</label>  
                      <input type="text" name="username" class="form-control" />  
                      <br />  
-                     <label>Enter Password</label>  
-                     <input type="text" name="password" class="form-control" />  
+                     <label>Please Enter Password</label>  
+                     <input type="password" name="password" class="form-control" />  
                      <br />  
                      <input type="submit" name="login" value="Login" class="btn btn-info" />  
                      <br />  
@@ -97,11 +105,15 @@
                 <h3 align="center">Register</h3>  
                 <br />  
                 <form method="post">  
+                     <label>Enter First Name</label>  
+                     <input type="text" name="firstname" class="form-control" />
+                     <label>Enter Last Name</label>  
+                     <input type="text" name="lastname" class="form-control" />    
                      <label>Enter Username</label>  
                      <input type="text" name="username" class="form-control" />  
                      <br />  
                      <label>Enter Password</label>  
-                     <input type="text" name="password" class="form-control" />  
+                     <input type="password" name="password" class="form-control" />  
                      <br />  
                      <input type="submit" name="register" value="Register" class="btn btn-info" />  
                      <br />  
