@@ -16,19 +16,20 @@
       {  
            echo '<script>alert("All Fields are required")</script>';  
       }
-      else if(strlen($_POST["password"]) < 8){
-          echo '<script>alert("Please enter a password with a minimum of 8 characters")</script>';  
-      }
       else if(mysqli_num_rows($res_u) > 0){
           echo '<script>alert("Username already exists")</script>';  
       }
       else  
       {  
+         
+          $options = [
+               'cost' => 12,
+           ];
            $firstname = mysqli_real_escape_string($connect, $_POST["firstname"]);
            $lastname = mysqli_real_escape_string($connect, $_POST["lastname"]);   
            $username = mysqli_real_escape_string($connect, $_POST["username"]);  
            $password = mysqli_real_escape_string($connect, $_POST["password"]);  
-           $password = password_hash($password, PASSWORD_DEFAULT);
+           $password = password_hash($password, PASSWORD_BCRYPT,$options);
            $completename = $firstname."\n".$lastname;
            $query = "INSERT INTO users(completename,username, password) VALUES('$completename','$username', '$password')";  
            if(mysqli_query($connect, $query))  
@@ -45,8 +46,8 @@
       }  
       else  
       {  
-           $username = mysqli_real_escape_string($connect, $_POST["username"]);  
-           $password = mysqli_real_escape_string($connect, $_POST["password"]);  
+           $username = ( $_POST["username"]);  
+           $password = ( $_POST["password"]);  
            $query = "SELECT * FROM users WHERE username = '$username'";  
            $result = mysqli_query($connect, $query);  
            if(mysqli_num_rows($result) > 0)  
